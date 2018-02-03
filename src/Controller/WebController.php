@@ -16,23 +16,27 @@ class WebController {
     /**
      * @Route("/message", name="message")
      */
-    function messageAction(Request $request)
+    function messageAction(Request $request, \App\Services\BotService $botService)
     {
+        // Create a BotMan instance, using the WebDriver
         DriverManager::loadDriver(\BotMan\Drivers\Web\WebDriver::class);
-
-        // Configuration for the BotMan WebDriver
-        $config = [];
-
-        // Create BotMan instance
-        $botman = BotManFactory::create($config);
+        $botman = BotManFactory::create([]); //No config options required
 
         // Give the bot some things to listen for.
-        $botman->hears('(hello|hi|hey)', function (BotMan $bot) {
-            $bot->reply('Hello yourself.');
+        $botman->hears('(hello|hi|hey)', function (BotMan $bot) use ($botService) {
+            $bot->reply($botService->handleHello());
         });
 
-        $botman->hears('(what night|when) is club night.*', function (BotMan $bot) {
-            $bot->reply('Club nights are on Wednesdays');
+        $botman->hears('(what night|when) is club night.*', function (BotMan $bot) use ($botService) {
+            $bot->reply($botService->handleClubNights());
+        });
+
+        $botman->hears('.*this week.*', function (Botman $bot) use ($botService) {
+            $bot->reply($botService->handleThisWeeksActivities());
+        });
+
+        $botman->hears('.*enrolment.*', function (Botman $bot) use ($botService) {
+            $bot->reply($botService->handleEnrolment());
         });
 
         // Start listening

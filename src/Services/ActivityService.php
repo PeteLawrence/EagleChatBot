@@ -18,7 +18,7 @@ class ActivityService {
     {
         // Fetch the activity endpoint of the API
         $apiUrl = $this->eagleApi . '/activity';
-        $activitiesString = file_get_contents();
+        $activitiesString = file_get_contents($apiUrl);
 
         // Decode the response and return
         return json_decode($activitiesString);

@@ -5,13 +5,15 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
+use BotMan\BotMan\Middleware\ApiAi;
 
 
-class WebController {
+class WebController extends Controller {
 
     /**
      * @Route("/message", name="message")
@@ -22,6 +24,10 @@ class WebController {
         DriverManager::loadDriver(\BotMan\Drivers\Web\WebDriver::class);
         $botman = BotManFactory::create([]); //No config options required
 
+        //Setup DialogFlow middleware
+        $dialogflow = ApiAi::create($this->getParameter('DIALOGFLOW_TOKEN'))->listenForAction();
+        $botman->middleware->received($dialogflow);
+
         // Give the bot some things to listen for.
         $botman->hears('(hello|hi|hey)', function (BotMan $bot) use ($botService) {
             $bot->reply($botService->handleHello());
@@ -31,13 +37,14 @@ class WebController {
             $bot->reply($botService->handleClubNights());
         });
 
-        $botman->hears('.*this week.*', function (Botman $bot) use ($botService) {
+        $botman->hears('_THISWEEK_', function (Botman $bot) use ($botService) {
             $bot->reply($botService->handleThisWeeksActivities());
-        });
+        })->middleware($dialogflow);
 
-        $botman->hears('.*enrolment.*', function (Botman $bot) use ($botService) {
+        $botman->hears('_ENROLMENT_', function (Botman $bot) use ($botService) {
+            //$extras = $bot->getMessage()->getExtras();
             $bot->reply($botService->handleEnrolment());
-        });
+        })->middleware($dialogflow);
 
         // Start listening
         $botman->listen();

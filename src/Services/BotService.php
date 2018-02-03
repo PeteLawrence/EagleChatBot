@@ -49,8 +49,7 @@ class BotService {
     public function handleThisWeeksActivities()
     {
         // Gets an array of this weeks activities
-        $thisWeeksActivities = $activityService->getThisWeeksActivities();
-
+        $thisWeeksActivities = $this->activityService->getThisWeeksActivities();
 
         if (sizeof($thisWeeksActivities) == 0) {
             return 'Sorry, there\'s nothing happening this week';

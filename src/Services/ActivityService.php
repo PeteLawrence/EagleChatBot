@@ -4,15 +4,23 @@ namespace App\Services;
 
 class ActivityService {
 
+    public function __construct($eagleApi)
+    {
+        $this->eagleApi = $eagleApi;
+    }
+
+
     /**
      * Returns an array of upcoming activities from the club website/API
      * @return [type] [description]
      */
     private function getActivities()
     {
-        //TODO: Make URL a parameter
-        $activitiesString = file_get_contents('https://www.eaglecanoeclub.co.uk/api/activity');
+        // Fetch the activity endpoint of the API
+        $apiUrl = $this->eagleApi . '/activity';
+        $activitiesString = file_get_contents();
 
+        // Decode the response and return
         return json_decode($activitiesString);
     }
 

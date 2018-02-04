@@ -1,0 +1,98 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-6 offset-3 border px-2 py-2 mt-2">
+            <h1>Eagle Chat Bot</h1>
+
+            <div id="app-messages" style="height: 600px; overflow-y: scroll;">
+                <div class="message" v-for="message in messages">
+                    <div class="message-from">
+                        <strong>
+                            {% verbatim %}
+                                <i class="fa fa-laptop" v-if="message.from == 'Bot'"></i>
+                                <i class="fa fa-user" v-if="message.from != 'Bot'"></i>
+                                {{ message.from }}
+                            {% endverbatim %}
+                        </strong>
+                    </div>
+                    <div class="message-text">
+                        {% verbatim %}
+                            {{ message.text }}
+                        {% endverbatim %}
+                    </div>
+                </div>
+            </div>
+
+
+            <form class="input-group" id="app-form">
+                <input type="text" class="form-control" id="message-input" placeholder="Enter your messsage" v-on:keyup="keyPress" autocomplete="off" />
+                <div class="input-group-append">
+                    <button id="message-send" class="btn btn-primary" disabled="disabled" v-on:click="send">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js" integrity="sha256-1Q2q5hg2YXp9fYlM++sIEXOcUb8BRSDUsQ1zXvLBqmA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
+    <script type="text/javascript">
+        var messages = [
+          { from: 'Bot', text: 'Welcome, try asking me about enrolment, or about upcoming activities' }
+        ];
+        var app = new Vue({
+            el: '#app-messages',
+            data: {
+                messages: messages
+            }
+        });
+
+        var appForm = new Vue({
+            el: '#app-form',
+            methods: {
+                // Handles a character being typed into the input box
+                keyPress: function (event) {
+                    if (event.target.value == '') {
+                        //No text is present, so disabled the 'Send' button
+                        $('#message-send').attr('disabled', 'disabled');
+                    } else {
+                        $('#message-send').removeAttr('disabled');
+                    }
+                },
+
+                // Sends the message to the bot, and displays the response
+                send: function (event) {
+                    event.preventDefault();
+                    var message = $('#message-input').val();
+
+                    //Add the sent message to the message list
+                    messages.push({ from: 'You', text: message });
+
+                    // Clear the inputs
+                    $('#message-input').val('');
+                    $('#message-send').attr('disabled', 'disabled');
+
+                    //Build up the form data
+                    const data = new FormData();
+                    data.append('driver', 'web');
+                    data.append('message', message);
+
+                    //Send the message
+                    axios.post('/message', data).then(function(response) {
+                        // Add the response to the messages array
+                        messages.push({ from: 'Bot', text: response.data.messages[0].text});
+
+                        // Scroll to the bottom of the window.
+                        // TODO: This currently runs before the response has been added to the DOM
+                        $("#app-messages").scrollTop($("#app-messages")[0].scrollHeight);
+                    });
+                }
+            }
+        });
+    </script>
+
+{% endblock %}

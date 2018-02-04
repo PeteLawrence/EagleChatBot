@@ -48,6 +48,10 @@
             el: '#app-messages',
             data: {
                 messages: messages
+            },
+            updated: function() {
+                // Scroll to the bottom of the window.
+                $("#app-messages").scrollTop($("#app-messages")[0].scrollHeight);
             }
         });
 
@@ -85,10 +89,6 @@
                     axios.post('/message', data).then(function(response) {
                         // Add the response to the messages array
                         messages.push({ from: 'Bot', text: response.data.messages[0].text});
-
-                        // Scroll to the bottom of the window.
-                        // TODO: This currently runs before the response has been added to the DOM
-                        $("#app-messages").scrollTop($("#app-messages")[0].scrollHeight);
                     });
                 }
             }

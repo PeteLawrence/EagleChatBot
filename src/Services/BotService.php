@@ -43,6 +43,26 @@ class BotService {
 
 
     /**
+     * Generates a response to being asked about insurance
+     * @return [type] [description]
+     */
+    public function handleInsurance()
+    {
+        return 'If you are a British Canoeing member your insurance is already provided.  If not, you can purchase insurance via the club - Adults: £3, Youth: £2';
+    }
+
+
+    /**
+     * Generates a response to being asked about membership
+     * @return [type] [description]
+     */
+    public function handleMembership()
+    {
+        return 'Membership runs from April-April.  Adult membership is £80, and youth membership is £45.  Discounts are available for families and volunteers.  For more information see https://www.eaglecanoeclub.co.uk/howtojoin';
+    }
+
+
+    /**
      * Generates a response to being asked about this weeks activities
      * @return boolean [description]
      */

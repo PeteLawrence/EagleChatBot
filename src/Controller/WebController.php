@@ -46,6 +46,14 @@ class WebController extends Controller {
             $bot->reply($botService->handleEnrolment());
         })->middleware($dialogflow);
 
+        $botman->hears('_INSURANCE_', function (Botman $bot) use ($botService) {
+            $bot->reply($botService->handleInsurance());
+        })->middleware($dialogflow);
+
+        $botman->hears('_MEMBERSHIP_', function (Botman $bot) use ($botService) {
+            $bot->reply($botService->handleMembership());
+        })->middleware($dialogflow);
+
         // Start listening
         $botman->listen();
 

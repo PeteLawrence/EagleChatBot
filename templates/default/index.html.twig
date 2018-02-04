@@ -26,9 +26,9 @@
 
 
             <form class="input-group" id="app-form">
-                <input type="text" class="form-control" id="message-input" placeholder="Enter your messsage" v-on:keyup="keyPress" autocomplete="off" />
+                <input type="text" class="form-control" id="message-input" placeholder="Enter your messsage..." v-on:keyup="keyPress" autocomplete="off" />
                 <div class="input-group-append">
-                    <button id="message-send" class="btn btn-primary" disabled="disabled" v-on:click="send">Send</button>
+                    <button id="message-send" class="btn btn-primary" disabled="disabled" v-on:click="send"><i class="fa fa-comment" title="Send"></i></button>
                 </div>
             </form>
         </div>
@@ -42,7 +42,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
     <script type="text/javascript">
         var messages = [
-          { from: 'Bot', text: 'Welcome, try asking me about enrolment, or about upcoming activities' }
+          { from: 'Bot', text: 'Welcome, try asking me about enrolment, membership, insurance or upcoming activities.  Or just say hi!' }
         ];
         var app = new Vue({
             el: '#app-messages',
